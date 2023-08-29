@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.dxdrillbassx.newworld.Plugin;
+import org.dxdrillbassx.newworld.Region;
 import org.dxdrillbassx.newworld.Signature;
 
 public class RegionCommands implements CommandExecutor {
@@ -31,7 +32,17 @@ public class RegionCommands implements CommandExecutor {
                 return true;
             }
 
+            Region region = Region.getRegionOfAPlayer(player);
 
+            if (region == null){
+                player.sendMessage(Signature.ERROR + "Сначала выделите регион!");
+                return true;
+            }
+
+            region.setBlock(material);
+
+            player.sendMessage(Signature.MAIN + "Успешно!"); //TODO: расширить вывод
+            return true;
 
         }
         return false;

@@ -10,10 +10,27 @@ import java.util.List;
 public class Region {
 
     private static final List<Region> regionList = new ArrayList<>();
+    public static Material wandItem = Material.WOODEN_SHOVEL; // Да Да иди нахуй класс wand с shovel
+
+    public static Region getRegionOfAPlayer(Player player){ // Получаем регион игрока по нику..
+        for (Region region: regionList){ // Интеграция в списки регионов..
+            if (region.owner == player)
+                return region;
+
+        }
+
+        return null;
+    }
 
     private Location pos1, pos2;
 
     private Player owner; // Уже какой-то WorldGuard а не WorldEdit...
+
+    public Region(Player owner) {
+        this.owner = owner;
+
+        regionList.add(this);
+    }
 
     public void setBlock(Material material){
         // Заменяем все блоки во всем регионе
@@ -55,5 +72,27 @@ public class Region {
 
     public void paste(){
         //TODO: временно не ебу как реализовать
+    }
+
+    // GETTER & SETTER //
+
+    public Location getPos1(){
+        return pos1;
+    }
+
+    public Location getPos2(){
+        return pos2;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setPos1(Location pos1){
+        this.pos1 = pos1;
+    }
+
+    public void setPos2(Location pos2){
+        this.pos2 = pos2;
     }
 }
