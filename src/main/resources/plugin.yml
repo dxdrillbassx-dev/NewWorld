@@ -2,3 +2,9 @@ name: NewWorld
 version: '${project.version}'
 main: org.dxdrillbassx.newworld.NewWorld
 api-version: '1.17'
+
+commands:
+  newWorld:
+    aliases:
+      - nw
+
