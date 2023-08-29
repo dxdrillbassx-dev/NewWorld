@@ -2,9 +2,14 @@ name: NewWorld
 version: '${project.version}'
 main: git.dxdrillbassx.newworld.Plugin
 api-version: '1.17'
+author: [dxdrillbassx-dev]
+description: Copy WorldEdit
 
 commands:
   newWorld:
     aliases:
       - nw
+  replace:
+    aliases:
+      - rep
 

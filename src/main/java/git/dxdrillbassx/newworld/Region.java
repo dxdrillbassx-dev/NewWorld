@@ -1,10 +1,13 @@
 package git.dxdrillbassx.newworld;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,9 @@ import java.util.List;
 public class Region {
 
     private static final List<Region> regionList = new ArrayList<>();
-    public static Material wandItem = Material.WOODEN_SHOVEL; // Да Да иди нахуй класс wand с shovel
+    public static Material wandItem = Material.WOODEN_AXE; // Предмет для выделения
+
+    private static final int regionShowDuration = 5;
 
     public static Region getRegionOfAPlayer(Player player){ // Получаем регион игрока по нику..
         for (Region region: regionList){ // Интеграция в списки регионов..
@@ -35,6 +40,8 @@ public class Region {
     }
 
     private boolean checkPos(){
+        if (pos1 == null || pos2 == null)
+            return false;
         if (pos1.getWorld() != pos2.getWorld()) { // ПроверОчка на мир
             owner.sendMessage(Signature.ERROR + "Точки находятся в разных мирах!");
             return false;
@@ -153,6 +160,46 @@ public class Region {
 
     // Анимация выделения региона
     public void showRegion(){
+        if (!checkPos()) // ПроверОчка на мир
+            return;
+
+        int startX = Math.min(pos1.getBlockX(), pos2.getBlockX()), startY = Math.min(pos1.getBlockY(), pos2.getBlockY()),
+                startZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+        int endX = Math.max(pos1.getBlockX(), pos2.getBlockX()), endY = Math.max(pos1.getBlockY(), pos2.getBlockY()),
+                endZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
+
+        // Частицы
+        Thread thread = new Thread(() -> {
+            int ctr = regionShowDuration;
+            while (ctr > 0) {
+                Location location;
+                for (int x = startX; x <= endX; x++) { // Очередной цикл..x
+                    for (int y = startY; y <= endY; y++) { // Очередной цикл..y
+                        for (int z = startZ; z <= endZ; z++) { // Очередной цикл..z
+                            if (x == startX || y == startY || z == startZ || x == endX || y == endY || z == endZ) { // Границы
+                                location = new Location(pos1.getWorld(), x, y, z);
+                                Location finalLocation = location;
+                                new BukkitRunnable() { // Это шобы не выебывался плаг на счет асинхронности
+                                    @Override
+                                    public void run() {
+                                        owner.spawnParticle(Particle.REDSTONE, finalLocation, 10, new Particle.DustOptions(Color.RED, 1f)); // Партиклы для границ
+                                    }
+                                }.runTask(Plugin.getPlugin(Plugin.class));
+                            }
+                        }
+                    }
+                }
+
+                ctr--;
+                try {
+                    Thread.sleep(1000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
 
     }
 

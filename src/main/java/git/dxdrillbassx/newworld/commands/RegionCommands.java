@@ -91,7 +91,7 @@ public class RegionCommands implements CommandExecutor {
 
             player.sendMessage(Signature.MAIN + "Регион расширен на " + args[1] + " блоков!");
         }
-        else if (args[0].equalsIgnoreCase("rep")){
+        else if (args[0].equalsIgnoreCase("replace")){
             Material materialFrom = Material.getMaterial(args[1]); // Ищем заменяймый блок по названию в Material..
             Material materialTo = Material.getMaterial(args[2]); // Ищем блок для замены по названию в Material..
 
@@ -107,6 +107,10 @@ public class RegionCommands implements CommandExecutor {
 
             region.replace(materialFrom, materialTo);
             player.sendMessage(Signature.MAIN + "Заменены блоки!"); //TODO: расширить вывод
+            return true;
+        }
+        else if (args[0].equalsIgnoreCase("show")){
+            region.showRegion();
             return true;
         }
         return false;
