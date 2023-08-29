@@ -106,7 +106,7 @@ public class RegionCommands implements CommandExecutor {
             }
 
             region.replace(materialFrom, materialTo);
-            System.out.println(Signature.MAIN + "Заменены блоки!"); //TODO: расширить вывод
+            player.sendMessage(Signature.MAIN + "Заменены блоки!"); //TODO: расширить вывод
             return true;
         }
         return false;

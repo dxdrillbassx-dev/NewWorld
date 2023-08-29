@@ -28,6 +28,7 @@ public class SelectRegionEvent implements Listener {
                     region = new Region(event.getPlayer()); // Создание региона в случае если его ещё нет x2
                 }
 
+                region.setPos2(event.getClickedBlock().getLocation());
                 event.getPlayer().sendMessage(Signature.MAIN + "Установлена вторая точка!");
             }
         }
