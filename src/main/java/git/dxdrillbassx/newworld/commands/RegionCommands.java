@@ -40,7 +40,7 @@ public class RegionCommands implements CommandExecutor {
             player.sendMessage(Signature.MAIN + "Успешно!"); //TODO: расширить вывод
             return true;
         }else if (args[0].equalsIgnoreCase("expand")){ // /nw expand 10 arg(up, down...)
-            if (args[2] == null) {
+            if (args.length < 3) {
                 BlockFace playerFace = player.getFacing();
                 String playerFaceStringValue = playerFace.toString(); // Преобразование значений
 
@@ -70,8 +70,8 @@ public class RegionCommands implements CommandExecutor {
 
                 region.expand(blockNum, playerFace);
             }
-            else {
-                if (args[3].equalsIgnoreCase("down")){
+            else if (args.length == 3){
+                if (args[2].equalsIgnoreCase("down")){
                     if (region.getPos1().getBlockY() < region.getPos2().getBlockY()){ // Проверка на высоту
                         region.getPos1().setY(region.getPos1().getY() - 10);
                     }
