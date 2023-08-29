@@ -92,7 +92,22 @@ public class RegionCommands implements CommandExecutor {
             player.sendMessage(Signature.MAIN + "Регион расширен на " + args[1] + " блоков!");
         }
         else if (args[0].equalsIgnoreCase("rep")){
+            Material materialFrom = Material.getMaterial(args[1]); // Ищем заменяймый блок по названию в Material..
+            Material materialTo = Material.getMaterial(args[2]); // Ищем блок для замены по названию в Material..
 
+            if (materialFrom == null){
+                player.sendMessage(Signature.ERROR + "Неизвестный блок " + args [1]); // Нема заменяймого блока в Material..
+                return true;
+            }
+
+            if (materialTo == null){
+                player.sendMessage(Signature.ERROR + "Неизвестный блок " + args [2]); // Нема блока на который заменяем в Material..
+                return true;
+            }
+
+            region.replace(materialFrom, materialTo);
+            System.out.println(Signature.MAIN + "Заменены блоки!"); //TODO: расширить вывод
+            return true;
         }
         return false;
     }
