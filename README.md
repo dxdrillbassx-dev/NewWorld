@@ -1,4 +1,5 @@
 # NewWorld
+![logo.svg](logo.svg)
 **A Minecraft Map Editor... that runs in-game!**
 
 * Use it in creative, survival on your server.
