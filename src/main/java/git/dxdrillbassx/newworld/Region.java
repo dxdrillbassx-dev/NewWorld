@@ -44,6 +44,25 @@ public class Region {
 
         Location location;
 
+        // Перестановка значений местами если вдруг одно из них больше..
+        if (x1 > x2){
+            int t = x1;
+            x1 = x2;
+            x2 = t;
+        }
+
+        if (y1 > y2){
+            int t = y1;
+            y1 = y2;
+            y2 = t;
+        }
+
+        if (z1 > z2){
+            int t = z1;
+            z1 = z2;
+            z2 = t;
+        }
+
         for (int x = x1; x <= x2; x++){ //Вложенный цыкл 1..5
             for (int y = y1; y <= y2; y++){ //Вложенный цыкл 1..5
                 for (int z = z1; z <= z2; z++){ //Вложенный цыкл 1..5
@@ -52,6 +71,8 @@ public class Region {
                 }
             }
         }
+
+        owner.sendMessage(Signature.MAIN + "Успешно!");
     }
 
     public void expand(int blockNum, Side side){
