@@ -1,6 +1,6 @@
 name: NewWorld
 version: '${project.version}'
-main: org.dxdrillbassx.newworld.NewWorld
+main: git.dxdrillbassx.newworld.Plugin
 api-version: '1.17'
 
 commands:

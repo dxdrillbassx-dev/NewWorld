@@ -1,10 +1,10 @@
-package org.dxdrillbassx.newworld.events;
+package git.dxdrillbassx.newworld.events;
 
+import git.dxdrillbassx.newworld.Region;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.dxdrillbassx.newworld.Region;
 
 public class SelectRegionEvent implements Listener {
 

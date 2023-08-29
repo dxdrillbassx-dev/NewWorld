@@ -1,4 +1,4 @@
-package org.dxdrillbassx.newworld;
+package git.dxdrillbassx.newworld;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

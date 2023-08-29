@@ -1,13 +1,13 @@
-package org.dxdrillbassx.newworld.commands;
+package git.dxdrillbassx.newworld.commands;
 
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.dxdrillbassx.newworld.Plugin;
-import org.dxdrillbassx.newworld.Region;
-import org.dxdrillbassx.newworld.Signature;
+import git.dxdrillbassx.newworld.Plugin;
+import git.dxdrillbassx.newworld.Region;
+import git.dxdrillbassx.newworld.Signature;
 
 public class RegionCommands implements CommandExecutor {
     public RegionCommands(Plugin plugin){

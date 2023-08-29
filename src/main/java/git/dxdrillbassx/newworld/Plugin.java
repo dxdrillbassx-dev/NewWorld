@@ -1,8 +1,8 @@
-package org.dxdrillbassx.newworld;
+package git.dxdrillbassx.newworld;
 
+import git.dxdrillbassx.newworld.events.SelectRegionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.dxdrillbassx.newworld.events.SelectRegionEvent;
 
 public final class Plugin extends JavaPlugin {
 
