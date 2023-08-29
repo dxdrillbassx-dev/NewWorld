@@ -10,7 +10,6 @@ public class RegionCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!(sender instanceof Player)){
-
             System.out.println("Только игрок может использовать эту команду!");
             return true;
         }
