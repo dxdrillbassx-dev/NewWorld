@@ -2,6 +2,7 @@ package git.dxdrillbassx.newworld;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -72,11 +73,43 @@ public class Region {
             }
         }
 
-        owner.sendMessage(Signature.MAIN + "Успешно!");
+        owner.sendMessage(Signature.MAIN + "Успешно!"); // Означет что все заебись
     }
 
-    public void expand(int blockNum, Side side){
-
+    // Логика работы для нашего BlockFace
+    public void expand(int blockNum, BlockFace side){
+        if (side == BlockFace.NORTH){
+            if (pos1.getZ() < pos2.getZ()){
+                pos1.setZ(pos1.getZ() - blockNum);
+            }
+            else {
+                pos2.setZ(pos2.getZ() - blockNum);
+            }
+        }
+        else if (side == BlockFace.EAST){
+            if (pos1.getX() > pos2.getX()){
+                pos1.setX(pos1.getX() + blockNum);
+            }
+            else {
+                pos2.setX(pos2.getX() + blockNum);
+            }
+        }
+        else if (side == BlockFace.WEST){
+            if (pos1.getX() < pos2.getX()){
+                pos1.setX(pos1.getX() - blockNum);
+            }
+            else {
+                pos2.setX(pos2.getX() - blockNum);
+            }
+        }
+        else if (side == BlockFace.SOUTH){
+            if (pos1.getZ() > pos2.getZ()){
+                pos1.setZ(pos1.getZ() + blockNum);
+            }
+            else {
+                pos2.setZ(pos2.getZ() + blockNum);
+            }
+        }
     }
 
     public void showRegion(){
