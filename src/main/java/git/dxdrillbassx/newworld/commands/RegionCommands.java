@@ -5,16 +5,30 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import git.dxdrillbassx.newworld.Plugin;
 import git.dxdrillbassx.newworld.Region;
 import git.dxdrillbassx.newworld.Signature;
 
-public class RegionCommands implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class RegionCommands implements CommandExecutor, TabCompleter {
     public RegionCommands(Plugin plugin){
+        for (Material material : Material.values()){
+            Mats.add(material.getKey().getNamespace());
+
+        }
         plugin.getCommand("newWorld").setExecutor(this);
+        plugin.getCommand("newWorld").setTabCompleter(this);
     }
 
+    public List<String>Mats = List.of();
+
+    public boolean noMats(String string){
+        return !Mats.contains(string);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -29,12 +43,15 @@ public class RegionCommands implements CommandExecutor {
         Region region = Region.getRegionOfAPlayer(player);
 
         if (args[0].equalsIgnoreCase("set")){
-            Material material = Material.getMaterial(args[1]); // Ищем блок по названию в Material..
-
-            if (material == null){
+            if (args.length < 2){
+                player.sendMessage(Signature.ERROR + "Недостаточно аргументов!");
+                return true;
+            }
+            if (noMats(args[1])){
                 player.sendMessage(Signature.ERROR + "Неизвестный блок!"); // Блока нема в Material..
                 return true;
             }
+            Material material = Material.getMaterial(args[1]); // Ищем блок по названию в Material..
 
             region.setBlock(material);
 
@@ -93,18 +110,21 @@ public class RegionCommands implements CommandExecutor {
             player.sendMessage(Signature.MAIN + "Регион расширен на " + args[1] + " блоков!");
         }
         else if (args[0].equalsIgnoreCase("replace")){
+            if (args.length < 3){
+                player.sendMessage(Signature.ERROR + "Недостаточно аргументов!");
+                return true;
+            }
+            if (noMats(args[1])){
+                player.sendMessage(Signature.ERROR + "Неизвестный блок " + args[1]); // Нема заменяймого блока в Material..
+                return true;
+            }
+            if (noMats(args[2])){
+                player.sendMessage(Signature.ERROR + "Неизвестный блок " + args[2]); // Нема блока на который заменяем в Material..
+                return true;
+            }
+
             Material materialFrom = Material.getMaterial(args[1]); // Ищем заменяймый блок по названию в Material..
             Material materialTo = Material.getMaterial(args[2]); // Ищем блок для замены по названию в Material..
-
-            if (materialFrom == null){
-                player.sendMessage(Signature.ERROR + "Неизвестный блок " + args [1]); // Нема заменяймого блока в Material..
-                return true;
-            }
-
-            if (materialTo == null){
-                player.sendMessage(Signature.ERROR + "Неизвестный блок " + args [2]); // Нема блока на который заменяем в Material..
-                return true;
-            }
 
             region.replace(materialFrom, materialTo);
             player.sendMessage(Signature.MAIN + "Заменены блоки!"); //TODO: расширить вывод
@@ -114,6 +134,36 @@ public class RegionCommands implements CommandExecutor {
             region.showRegion();
             return true;
         }
+        else
+        player.sendMessage(Signature.ERROR + "Неизвестная команда!");
+
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
+
+        if (args.length == 1)
+            return List.of("set", "expand", "show", "replace");
+
+        if (args.length >= 1){
+            if (args[0].equalsIgnoreCase("expand")) {
+                if (args.length == 3)
+                    return List.of("up", "down");
+            }
+            if (args[0].equalsIgnoreCase("set")){
+                if (args.length == 2){
+                    var Mats = new ArrayList<String>();
+                    for (Material material : Material.values()){
+                        Mats.add(material.getKey().getNamespace());
+
+                    }
+                    return Mats;
+                }
+            }
+        }
+
+        return null;
+
     }
 }
