@@ -5,6 +5,8 @@ import git.dxdrillbassx.newworld.events.SelectRegionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.concurrent.CompletableFuture;
+
 public final class Plugin extends JavaPlugin {
 
     @Override

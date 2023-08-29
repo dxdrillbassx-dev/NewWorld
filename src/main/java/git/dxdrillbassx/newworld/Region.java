@@ -2,6 +2,7 @@ package git.dxdrillbassx.newworld;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
@@ -33,7 +34,19 @@ public class Region {
         regionList.add(this);
     }
 
+    private boolean checkPos(){
+        if (pos1.getWorld() != pos2.getWorld()) { // ПроверОчка на мир
+            owner.sendMessage(Signature.ERROR + "Точки находятся в разных мирах!");
+            return false;
+        }
+
+        return true;
+    }
+
     public void setBlock(Material material){
+        if (!checkPos()) // ПроверОчка на мир
+            return;
+
         // Заменяем все блоки во всем регионе
         int x1 = pos1.getBlockX();
         int y1 = pos1.getBlockY();
@@ -78,6 +91,9 @@ public class Region {
 
     // Логика работы для нашего BlockFace
     public void expand(int blockNum, BlockFace side){
+        if (!checkPos()) // ПроверОчка на мир
+            return;
+
         if (side == BlockFace.NORTH){
             if (pos1.getZ() < pos2.getZ()){
                 pos1.setZ(pos1.getZ() - blockNum);
@@ -112,18 +128,45 @@ public class Region {
         }
     }
 
+    public void replace(Material targetBlock, Material toBlock){ // Получение позиции блоков | Заменяймый блок | На что заменяется
+        if (!checkPos()) // ПроверОчка на мир
+            return;
+
+        int startX = Math.min(pos1.getBlockX(), pos2.getBlockX()), startY = Math.min(pos1.getBlockY(), pos2.getBlockY()),
+                startZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+        int endX = Math.max(pos1.getBlockX(), pos2.getBlockX()), endY = Math.max(pos1.getBlockY(), pos2.getBlockY()),
+                endZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
+
+        Location location;
+        for (int x = startX; x <= endX; x++){ // Очередной цикл..x
+            for (int y = startY; y <= endY; y++){ // Очередной цикл..y
+                for (int z = startZ; z <= endZ; z++){ // Очередной цикл..z
+                    location = new Location(pos1.getWorld(), x, y, z);
+                    if (location.getBlock().getType() == targetBlock) {
+                        location.getBlock().setType(toBlock);
+//                       BlockFace blockFace = location.getBlock().getFace(location.getBlock());  Сохранение направления смотрения
+                    }
+                }
+            }
+        }
+    }
+
+    // Анимация выделения региона
     public void showRegion(){
 
     }
 
+    // Отмена действия
     public void undo(){
         //TODO: временно не ебу как реализовать
     }
 
+    // Копирование выделеного региона
     public void copy(){
         //TODO: временно не ебу как реализовать
     }
 
+    // Вставка скопированого региона
     public void paste(){
         //TODO: временно не ебу как реализовать
     }

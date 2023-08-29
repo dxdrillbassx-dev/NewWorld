@@ -28,8 +28,6 @@ public class SelectRegionEvent implements Listener {
                     region = new Region(event.getPlayer()); // Создание региона в случае если его ещё нет x2
                 }
 
-                region.setPos2(event.getClickedBlock().getLocation()); // Проверка на не ебанул ли игрок по воздуху x2
-
                 event.getPlayer().sendMessage(Signature.MAIN + "Установлена вторая точка!");
             }
         }

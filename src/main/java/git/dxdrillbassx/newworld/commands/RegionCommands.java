@@ -91,6 +91,9 @@ public class RegionCommands implements CommandExecutor {
 
             player.sendMessage(Signature.MAIN + "Регион расширен на " + args[1] + " блоков!");
         }
+        else if (args[0].equalsIgnoreCase("rep")){
+
+        }
         return false;
     }
 }
