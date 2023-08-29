@@ -17,7 +17,7 @@ public class Region {
     private static final List<Region> regionList = new ArrayList<>();
     public static Material wandItem = Material.WOODEN_AXE; // Предмет для выделения
 
-    private static final int regionShowDuration = 5;
+    private static final int regionShowDuration = 10;
 
     public static Region getRegionOfAPlayer(Player player){ // Получаем регион игрока по нику..
         for (Region region: regionList){ // Интеграция в списки регионов..
@@ -30,6 +30,8 @@ public class Region {
     }
 
     private Location pos1, pos2;
+
+    int[][][] clipboard;
 
     private Player owner; // Уже какой-то WorldGuard а не WorldEdit...
 
@@ -210,12 +212,39 @@ public class Region {
 
     // Копирование выделеного региона
     public void copy(){
-        //TODO: временно не ебу как реализовать
+        for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++){ // Очередной цикл..x
+            for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++){ // Очередной цикл..y
+                for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++){ // Очередной цикл..z
+                    Location loc = new Location(pos1.getWorld(), x, y, z);
+                    clipboard[x -  pos1.getBlockX()][y -  pos1.getBlockY()][z -  pos1.getBlockZ()] = getMaterialId(loc.getBlock().getType());
+                }
+            }
+        }
     }
 
     // Вставка скопированого региона
     public void paste(){
-        //TODO: временно не ебу как реализовать
+        for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++){ // Очередной цикл..x
+            for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++){ // Очередной цикл..y
+                for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++){ // Очередной цикл..z
+                    Location loc = new Location(pos1.getWorld(), x, y, z);
+                    loc.getBlock().setType(); // TODO: 29.08.2023  
+
+                    clipboard[x -  pos1.getBlockX()][y -  pos1.getBlockY()][z -  pos1.getBlockZ()] = getMaterialId(loc.getBlock().getType());
+                }
+            }
+        }
+    }
+
+    // Получение ID предмета для сохранения copy
+    private int getMaterialId(Material material){
+        for (int i = 0; i < Material.values().length; i++){
+            if (Material.values()[i] == material){
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     // GETTER & SETTER //

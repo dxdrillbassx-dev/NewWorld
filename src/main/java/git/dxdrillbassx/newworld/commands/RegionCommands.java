@@ -15,6 +15,7 @@ public class RegionCommands implements CommandExecutor {
         plugin.getCommand("newWorld").setExecutor(this);
     }
 
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -45,18 +46,18 @@ public class RegionCommands implements CommandExecutor {
                 String playerFaceStringValue = playerFace.toString(); // Преобразование значений
 
                 // Проверка в какую сторону смотрит игрок
-                if (playerFaceStringValue.contains("NORTH")){
+                if (playerFaceStringValue.contains("NORTH"))
                     playerFace = BlockFace.NORTH;
-                }
-                else if (playerFaceStringValue.contains("SOUTH")){
+
+                else if (playerFaceStringValue.contains("SOUTH"))
                     playerFace = BlockFace.SOUTH;
-                }
-                else if (playerFaceStringValue.contains("EAST")){
+
+                else if (playerFaceStringValue.contains("EAST"))
                     playerFace = BlockFace.EAST;
-                }
-                else if (playerFaceStringValue.contains("WEST")){
+
+                else if (playerFaceStringValue.contains("WEST"))
                     playerFace = BlockFace.WEST;
-                }
+
 
                 int blockNum; // Без этой хуйни переменная удалится при выходе за скобки
 
