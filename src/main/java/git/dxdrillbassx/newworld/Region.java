@@ -88,18 +88,18 @@ public class Region {
         }
         else if (side == BlockFace.EAST){
             if (pos1.getX() > pos2.getX()){
-                pos1.setX(pos1.getX() + blockNum);
+                pos1.setX(pos1.getZ() + blockNum);
             }
             else {
-                pos2.setX(pos2.getX() + blockNum);
+                pos2.setX(pos2.getZ() + blockNum);
             }
         }
         else if (side == BlockFace.WEST){
             if (pos1.getX() < pos2.getX()){
-                pos1.setX(pos1.getX() - blockNum);
+                pos1.setX(pos1.getZ() - blockNum);
             }
             else {
-                pos2.setX(pos2.getX() - blockNum);
+                pos2.setX(pos2.getZ() - blockNum);
             }
         }
         else if (side == BlockFace.SOUTH){

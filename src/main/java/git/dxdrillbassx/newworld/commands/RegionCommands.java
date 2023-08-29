@@ -76,15 +76,15 @@ public class RegionCommands implements CommandExecutor {
                         region.getPos1().setY(region.getPos1().getY() - 10);
                     }
                     else{
-                        region.getPos2().setY(region.getPos2().getY() - 10);
+                        region.getPos2().setY(region.getPos1().getY() - 10);
                     }
                 }
-                else if (args[3].equalsIgnoreCase("up")){
+                else if (args[2].equalsIgnoreCase("up")){
                     if (region.getPos1().getBlockY() > region.getPos2().getBlockY()){ // Проверка на высоту
                         region.getPos1().setY(region.getPos1().getY() + 10);
                     }
                     else{
-                        region.getPos2().setY(region.getPos2().getY() + 10);
+                        region.getPos2().setY(region.getPos1().getY() + 10);
                     }
                 }
             }
