@@ -15,3 +15,4 @@
 * /nw show - displaying the boundaries of the selected territory
 * /nw copy - copying the selected area
 * /nw paste - paste previously copied territory
+* /nw undo - undoing a past action
