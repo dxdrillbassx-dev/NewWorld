@@ -19,6 +19,8 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
         for (Material material : Material.values()){
             if (material.isLegacy())
                 continue;
+            if (material.isItem())
+                continue;
             Mats.add(material.getKey().toString());
 
         }
@@ -57,7 +59,7 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
                 player.sendMessage(Signature.ERROR + "Неизвестный блок!"); // Блока нема в Material..
                 return true;
             }
-            Material material = Material.getMaterial(args[1]); // Ищем блок по названию в Material..
+            Material material = Material.getMaterial(args[1].replace("minecraft:", "").toUpperCase()); // Ищем блок по названию в Material..
 
             region.setBlock(material);
 
@@ -178,15 +180,9 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
                 if (args.length == 3)
                     return List.of("up", "down");
             }
-            if (args[0].equalsIgnoreCase("set")){
-                if (args.length == 2){
-                    var Mats = new ArrayList<String>();
-                    for (Material material : Material.values()){
-                        Mats.add(material.getKey().getNamespace());
-
-                    }
+            if (args[0].equalsIgnoreCase("set")) {
+                if (args.length == 2)
                     return Mats;
-                }
             }
         }
         return null;
