@@ -31,8 +31,10 @@ public class Region {
     private Location pos1, pos2;
 
     int[][][] clipboard;
+    int[][][] prevRegionState;
 
     private Player owner; // Уже какой-то WorldGuard а не WorldEdit...
+    private Action lastAction;
 
     public Region(Player owner) {
         this.owner = owner;
@@ -52,6 +54,8 @@ public class Region {
     }
 
     public void setBlock(Material material){
+        prevRegionState = regionToArray();
+
         if (!checkPos()) // ПроверОчка на мир
             return;
 
@@ -70,6 +74,7 @@ public class Region {
         }
 
         owner.sendMessage(Signature.MAIN + "Успешно!"); // Означет что все заебись
+        lastAction = Action.SET;
     }
 
     // Логика работы для нашего BlockFace
@@ -109,6 +114,8 @@ public class Region {
                 pos2.setZ(pos2.getZ() + blockNum);
             }
         }
+
+        lastAction = Action.EXPAND;
     }
 
     public void replace(Material targetBlock, Material toBlock){ // Получение позиции блоков | Заменяймый блок | На что заменяется
@@ -132,6 +139,8 @@ public class Region {
                 }
             }
         }
+
+        lastAction = Action.SET;
     }
 
     // Анимация выделения региона
@@ -179,23 +188,27 @@ public class Region {
 
     // Отмена действия
     public void undo(){
-        //TODO: временно не ебу как реализовать
+        if (lastAction == Action.SET){
+            for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++){ // Очередной цикл..x
+                for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++){ // Очередной цикл..y
+                    for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++){ // Очередной цикл..z
+                        Location loc = new Location(pos1.getWorld(), x, y, z);
+                        loc.getBlock().setType(Material.values()[prevRegionState[x - pos1.getBlockX()][y - pos1.getBlockY()][z - pos1.getBlockZ()]]);
+                    }
+                }
+            }
+        }
+        else {
+            owner.sendMessage(Signature.ERROR + "Нечего отменять!");
+        }
     }
 
     // Копирование выделеного региона
     public void copy(){
         sortPositions();
 
-        clipboard = new int[pos2.getBlockX() - pos1.getBlockX() + 1][pos2.getBlockY() - pos1.getBlockY() + 1][pos2.getBlockZ() - pos1.getBlockZ() + 1];
+        clipboard = regionToArray();
 
-        for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++){ // Очередной цикл..x
-            for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++){ // Очередной цикл..y
-                for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++){ // Очередной цикл..z
-                    Location loc = new Location(pos1.getWorld(), x, y, z);
-                    clipboard[x -  pos1.getBlockX()][y -  pos1.getBlockY()][z -  pos1.getBlockZ()] = getMaterialId(loc.getBlock().getType());
-                }
-            }
-        }
     }
 
     // Вставка скопированого региона
@@ -213,6 +226,8 @@ public class Region {
                 }
             }
         }
+
+        lastAction = Action.PASTE;
     }
 
     // Получение ID предмета для сохранения copy
@@ -236,6 +251,23 @@ public class Region {
         pos2 = new Location(pos1.getWorld(), maxX, maxY, maxZ);
     }
 
+    private int[][][] regionToArray() {
+        sortPositions();
+        int[][][] result = new int[pos2.getBlockX() - pos1.getBlockX() + 1][pos2.getBlockY() - pos1.getBlockY() + 1][pos2.getBlockZ() - pos1.getBlockZ() + 1];
+
+        for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++) { // Очередной цикл..x
+            for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++) { // Очередной цикл..y
+                for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++) { // Очередной цикл..z
+                    Location loc = new Location(pos1.getWorld(), x, y, z);
+                    result[x - pos1.getBlockX()][y - pos1.getBlockY()][z - pos1.getBlockZ()] = getMaterialId(loc.getBlock().getType());
+                }
+
+            }
+        }
+
+        return result;
+    }
+
     // GETTER & SETTER //
 
     public Location getPos1(){
@@ -251,10 +283,14 @@ public class Region {
     }
 
     public void setPos1(Location pos1){
+        if (this.pos1 != pos1)
+            lastAction = null;
         this.pos1 = pos1;
     }
 
     public void setPos2(Location pos2){
+        if (this.pos2 != pos2)
+            lastAction = null;
         this.pos2 = pos2;
     }
 

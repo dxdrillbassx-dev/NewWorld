@@ -164,6 +164,10 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
             }
             return true;
         }
+        else if (args[0].equalsIgnoreCase("undo")){
+            region.undo();
+            return true;
+        }
         else
         player.sendMessage(Signature.ERROR + "Неизвестная команда!");
         return true;
@@ -173,7 +177,7 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
 
         if (args.length == 1)
-            return List.of("set", "expand", "show", "replace");
+            return List.of("set", "expand", "show", "replace", "copy", "paste", "undo");
 
         if (args.length >= 1){
             if (args[0].equalsIgnoreCase("expand")) {
