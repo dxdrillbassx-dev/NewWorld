@@ -13,3 +13,5 @@
 * /nw replace - replacing certain blocks with others
 * /nw rep - command alias replace
 * /nw show - displaying the boundaries of the selected territory
+* /nw copy - copying the selected area
+* /nw paste - paste previously copied territory
