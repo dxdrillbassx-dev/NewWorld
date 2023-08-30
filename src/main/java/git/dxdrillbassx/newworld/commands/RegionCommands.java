@@ -87,6 +87,7 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
                 }
 
                 region.expand(blockNum, playerFace);
+                return true;
             }
             else if (args.length == 3){
                 if (args[2].equalsIgnoreCase("down")){
@@ -108,6 +109,7 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
             }
 
             player.sendMessage(Signature.MAIN + "Регион расширен на " + args[1] + " блоков!");
+            return true;
         }
         else if (args[0].equalsIgnoreCase("replace")){
             if (args.length < 3){
@@ -134,10 +136,29 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
             region.showRegion();
             return true;
         }
+        else if (args[0].equalsIgnoreCase("copy")){
+            if (region.getPos1() != null && region.getPos2() != null){
+                region.copy();
+                player.sendMessage(Signature.MAIN + "Успех!");
+            }
+            else {
+                player.sendMessage(Signature.ERROR + "Сначала выделите две точки!");
+            }
+            return true;
+        }
+        else if (args[0].equalsIgnoreCase("paste")){
+            if (region.getClipboard() != null){
+                region.paste();
+                player.sendMessage(Signature.MAIN + "Успех!");
+            }
+            else {
+                player.sendMessage(Signature.ERROR + "Нечего вставлять, скопируйте что-то!");
+            }
+            return true;
+        }
         else
         player.sendMessage(Signature.ERROR + "Неизвестная команда!");
-
-        return false;
+        return true;
     }
 
     @Override
@@ -162,8 +183,6 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
                 }
             }
         }
-
         return null;
-
     }
 }

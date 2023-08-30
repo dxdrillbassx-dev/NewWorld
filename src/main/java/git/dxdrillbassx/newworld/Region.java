@@ -4,7 +4,6 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -57,38 +56,13 @@ public class Region {
             return;
 
         // Заменяем все блоки во всем регионе
-        int x1 = pos1.getBlockX();
-        int y1 = pos1.getBlockY();
-        int z1 = pos1.getBlockZ();
-
-        int x2 = pos2.getBlockX();
-        int y2 = pos2.getBlockY();
-        int z2 = pos2.getBlockZ();
+        sortPositions();
 
         Location location;
 
-        // Перестановка значений местами если вдруг одно из них больше..
-        if (x1 > x2){
-            int t = x1;
-            x1 = x2;
-            x2 = t;
-        }
-
-        if (y1 > y2){
-            int t = y1;
-            y1 = y2;
-            y2 = t;
-        }
-
-        if (z1 > z2){
-            int t = z1;
-            z1 = z2;
-            z2 = t;
-        }
-
-        for (int x = x1; x <= x2; x++){ //Вложенный цыкл 1..5
-            for (int y = y1; y <= y2; y++){ //Вложенный цыкл 1..5
-                for (int z = z1; z <= z2; z++){ //Вложенный цыкл 1..5
+        for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++){ //Вложенный цыкл 1..5
+            for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++){ //Вложенный цыкл 1..5
+                for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++){ //Вложенный цыкл 1..5
                     location = new Location(pos1.getWorld(), x, y, z);
                     location.getBlock().setType(material);
                 }
@@ -165,20 +139,18 @@ public class Region {
         if (!checkPos()) // ПроверОчка на мир
             return;
 
-        int startX = Math.min(pos1.getBlockX(), pos2.getBlockX()), startY = Math.min(pos1.getBlockY(), pos2.getBlockY()),
-                startZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
-        int endX = Math.max(pos1.getBlockX(), pos2.getBlockX()), endY = Math.max(pos1.getBlockY(), pos2.getBlockY()),
-                endZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
+        sortPositions();
 
         // Частицы
         Thread thread = new Thread(() -> {
             int ctr = regionShowDuration;
             while (ctr > 0) {
                 Location location;
-                for (int x = startX; x <= endX; x++) { // Очередной цикл..x
-                    for (int y = startY; y <= endY; y++) { // Очередной цикл..y
-                        for (int z = startZ; z <= endZ; z++) { // Очередной цикл..z
-                            if (x == startX || y == startY || z == startZ || x == endX || y == endY || z == endZ) { // Границы
+                for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++) { // Очередной цикл..x
+                    for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++) { // Очередной цикл..y
+                        for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++) { // Очередной цикл..z
+                            if (x == pos1.getBlockX() || y == pos1.getBlockY() || z == pos1.getBlockZ() ||
+                                    x == pos2.getBlockX() || y == pos2.getBlockY() || z == pos2.getBlockZ()) { // Границы
                                 location = new Location(pos1.getWorld(), x, y, z);
                                 Location finalLocation = location;
                                 new BukkitRunnable() { // Это шобы не выебывался плаг на счет асинхронности
@@ -212,6 +184,10 @@ public class Region {
 
     // Копирование выделеного региона
     public void copy(){
+        sortPositions();
+
+        clipboard = new int[pos2.getBlockX() - pos1.getBlockX() + 1][pos2.getBlockY() - pos1.getBlockY() + 1][pos2.getBlockZ() - pos1.getBlockZ() + 1];
+
         for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++){ // Очередной цикл..x
             for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++){ // Очередной цикл..y
                 for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++){ // Очередной цикл..z
@@ -224,13 +200,16 @@ public class Region {
 
     // Вставка скопированого региона
     public void paste(){
-        for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++){ // Очередной цикл..x
-            for (int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++){ // Очередной цикл..y
-                for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++){ // Очередной цикл..z
-                    Location loc = new Location(pos1.getWorld(), x, y, z);
-                    loc.getBlock().setType(); // TODO: 29.08.2023  
 
-                    clipboard[x -  pos1.getBlockX()][y -  pos1.getBlockY()][z -  pos1.getBlockZ()] = getMaterialId(loc.getBlock().getType());
+        Location playerLoc = owner.getLocation();
+
+        for (int x = playerLoc.getBlockX(); x <= playerLoc.getBlockX() + clipboard.length - 1; x++){ // Очередной цикл..x
+            for (int y = playerLoc.getBlockY(); y <= playerLoc.getBlockY() + clipboard[0].length - 1; y++){ // Очередной цикл..y
+                for (int z = playerLoc.getBlockZ(); z <= playerLoc.getBlockZ() + clipboard[0][0].length - 1; z++){ // Очередной цикл..z
+                    Location loc = new Location(pos1.getWorld(), x, y, z);
+                    loc.getBlock().setType(Material.values()[clipboard[x - playerLoc.getBlockX()][y - playerLoc.getBlockY()][z - playerLoc.getBlockZ()]]);
+
+                    clipboard[x -  playerLoc.getBlockX()][y -  playerLoc.getBlockY()][z -  playerLoc.getBlockZ()] = getMaterialId(loc.getBlock().getType());
                 }
             }
         }
@@ -245,6 +224,16 @@ public class Region {
         }
 
         return -1;
+    }
+
+    private void sortPositions(){
+        int minX = Math.min(pos1.getBlockX(), pos2.getBlockX()), minY = Math.min(pos1.getBlockY(), pos2.getBlockY()),
+                minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+        int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX()), maxY = Math.max(pos1.getBlockY(), pos2.getBlockY()),
+                maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
+
+        pos1 = new Location(pos1.getWorld(), minX, minY, minZ);
+        pos2 = new Location(pos1.getWorld(), maxX, maxY, maxZ);
     }
 
     // GETTER & SETTER //
@@ -267,5 +256,9 @@ public class Region {
 
     public void setPos2(Location pos2){
         this.pos2 = pos2;
+    }
+
+    public int[][][] getClipboard() {
+        return clipboard;
     }
 }
