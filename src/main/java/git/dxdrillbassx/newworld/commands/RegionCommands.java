@@ -17,14 +17,16 @@ import java.util.List;
 public class RegionCommands implements CommandExecutor, TabCompleter {
     public RegionCommands(Plugin plugin){
         for (Material material : Material.values()){
-            Mats.add(material.getKey().getNamespace());
+            if (material.isLegacy())
+                continue;
+            Mats.add(material.getKey().toString());
 
         }
         plugin.getCommand("newWorld").setExecutor(this);
         plugin.getCommand("newWorld").setTabCompleter(this);
     }
 
-    public List<String>Mats = List.of();
+    public List<String>Mats = new ArrayList<>();
 
     public boolean noMats(String string){
         return !Mats.contains(string);
@@ -42,6 +44,10 @@ public class RegionCommands implements CommandExecutor, TabCompleter {
 
         Region region = Region.getRegionOfAPlayer(player);
 
+        if (args.length == 0){
+            player.sendMessage(Signature.ERROR + "Недостаточно аргументов!");
+            return false;
+        }
         if (args[0].equalsIgnoreCase("set")){
             if (args.length < 2){
                 player.sendMessage(Signature.ERROR + "Недостаточно аргументов!");
